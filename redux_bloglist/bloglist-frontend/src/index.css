@@ -1,0 +1,21 @@
+.notification {
+    min-height: 2em;
+}
+
+.success {
+    font-size: 1.2em;
+    padding: 1em;
+    color: green;
+    border: 5px solid green;
+    background-color: mintcream;
+    margin: 0 -1em;
+}
+
+.error {
+    padding: 1em;
+    font-size: 1.2em;
+    color: red;
+    border: 5px solid red;
+    background-color: gainsboro;
+    margin: 0 -1em;
+}
