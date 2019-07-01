@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 import Notification from './Notification'
 import PropTypes from 'prop-types'
 import { useField } from '../hooks/index'
+import store  from '../store'
 
 const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
   const addedTitle = useField('text')
@@ -23,14 +24,33 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
     try {
       const response = await blogService.create(createdBlog)
       setBlogs(blogs.concat(response))
-      setMessage(`a new blog ${addedTitle} by ${addedAuthor}`)
-      setType('success')
+      store.dispatch({
+        type: 'CREATE', 
+        data: {
+          notification: `a new blog ${title} by ${author}`,
+          style: 'success'
+      }})
+
       setTimeout(() => {
-        setMessage(null)
-        setType(null)
+        store.dispatch({type: 'REMOVE', data: {
+          notification: null,
+          style: null
+        }})
       }, 3000)
     } catch (exception) {
-      console.log('Exception ', exception)
+      store.dispatch({
+        type: 'CREATE', 
+        data: {
+          notification: 'could not create new blog',
+          style: 'error'
+      }})
+
+      setTimeout(() => {
+        store.dispatch({type: 'REMOVE', data: {
+          notification: null,
+          style: null
+        }})
+      }, 3000)
     }
     addedAuthor.resetfield.reset()
     addedTitle.resetfield.reset()

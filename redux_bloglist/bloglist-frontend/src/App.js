@@ -7,14 +7,15 @@ import CreateForm from './components/CreateForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import { useField } from './hooks/index.js'
+import store from './store'
+import { connect } from 'react-redux'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   let username = useField('text')
   let password = useField('password')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [type, setType] = useState(null)
   const blogFormRef = React.createRef()
 
   useEffect(() => {
@@ -52,21 +53,36 @@ const App = () => {
       setUser(user)
       username.resetfield.reset()
       password.resetfield.reset()
-      setMessage('kirjautunut sisään')
-      setType('success')
+      store.dispatch({
+        type: 'CREATE', 
+        data: {
+          notification: 'kirjautunut sisään',
+          style: 'success'
+      }})
+
       setTimeout(() => {
-        setMessage(null)
-        setType(null)
+        store.dispatch({type: 'REMOVE', data: {
+          notification: null,
+          style: null
+        }})
       }, 3000)
     } catch (exception) {
-      setMessage('käyttäjätunnus tai salasana virheellinen')
-      setType('error')
+      store.dispatch({
+        type: 'CREATE', 
+        data: {
+          notification: 'käyttäjätunnus tai salasana virheellinen',
+          style: 'error'
+      }})
       username.resetfield.reset()
       password.resetfield.reset()
       setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 3000)
+        store.dispatch({
+          type: 'REMOVE', 
+          data: {
+            notification: null,
+            style: null
+          }})
+        }, 3000)
     }
   }
 
@@ -84,50 +100,30 @@ const App = () => {
     )
   }
 
-
-  /*const loginForm = () => (
-    <div>
-      <h2>Kirjaudu</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          käyttäjätunnus
-            <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          salasana
-            <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">kirjaudu</button>
-
-      </form>
-    </div>
-  )*/
-
   const logoutUser = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
-    setMessage('kirjautunut ulos')
-    setType('success')
+    store.dispatch({
+      type: 'CREATE', 
+      data: {
+        notification: 'kirjautunut ulos',
+        style: 'success'
+      }})
+
     setTimeout(() => {
-      setMessage(null)
-      setType(null)
-    }, 3000)
+      store.dispatch({
+        type: 'REMOVE', 
+        data: {
+          notification: null,
+          style: null
+        }})
+      }, 3000)
   }
 
   return (
     <div>
       <div className='notification'>
-        <Notification message={message} type={type} />
+        <Notification />
       </div>
       <div>
         { user === null ?
@@ -149,4 +145,13 @@ const App = () => {
   )
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification,
+    style: state.style,
+  }
+}
+
+const ConnectedApp = connect(mapStateToProps)(App)
+
+export default ConnectedApp
