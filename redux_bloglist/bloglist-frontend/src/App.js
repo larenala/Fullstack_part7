@@ -12,16 +12,23 @@ import { connect } from 'react-redux'
 import './index.css'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  //const [blogs, setBlogs] = useState([])
+  const { blogs } = store.getState()
   let username = useField('text')
   let password = useField('password')
   const [user, setUser] = useState(null)
   const blogFormRef = React.createRef()
 
+
+
   useEffect(() => {
     try {
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
+      blogService.getAll().then(blogs =>       
+        store.dispatch({
+          type: 'GET_BLOGS',
+          data: blogs
+        })
+        //setBlogs( blogs )
       )
     } catch (exception) {
       console.log('exception ', exception)
@@ -133,10 +140,10 @@ const App = () => {
             <p>{user.name} logged in</p>
             <button onClick={logoutUser}>Log out</button>
             <Togglable buttonLabel="lisää uusi blogi" ref={blogFormRef}>
-              <CreateForm blogs={blogs} setBlogs={setBlogs} blogFormRef={blogFormRef} user={user}/>
+              <CreateForm blogs={blogs} blogFormRef={blogFormRef} user={user}/>
             </Togglable>
             {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-              <Blog className='blog' key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
+              <Blog className='blog' key={blog.id} blog={blog} blogs={blogs} user={user} />
             )}
           </div>
         }
@@ -149,6 +156,7 @@ const mapStateToProps = (state) => {
   return {
     notification: state.notification,
     style: state.style,
+    blogs: state.blogs
   }
 }
 

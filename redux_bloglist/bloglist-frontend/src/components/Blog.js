@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
+import store from '../store'
 
-const Blog = ({ blog, blogs, setBlogs, user }) => {
+const Blog = ({ blog, blogs, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -26,7 +27,10 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
       }
       try {
         const response = await blogService.update(blog.id, changedBlog)
-        setBlogs(blogs.map(b => b.id !== blog.id ? b : response))
+        store.dispatch({
+          type: 'GET_BLOGS',
+          data: blogs.map(b => b.id !== blog.id ? b : response)
+        })
         setShowInfo(true)
       } catch (exception) {
         console.log('exception ', exception)
@@ -40,7 +44,10 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
       try {
         if (window.confirm(`Poistetaanko ${blogToRemove.title}?`)) {
           await blogService.deleteItem(id)
-          setBlogs(blogs.filter(b => b.id !== blogToRemove.id))
+          store.dispatch({
+            type: 'GET_BLOGS',
+            data: blogs.filter(b => b.id !== blogToRemove.id)
+          })
         }
       } catch (exception) {
         console.log('exception ', exception)

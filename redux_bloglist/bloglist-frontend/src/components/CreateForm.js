@@ -1,18 +1,14 @@
-
-import React, { useState } from 'react'
+import React from 'react'
 import blogService from '../services/blogs'
 import Notification from './Notification'
 import PropTypes from 'prop-types'
 import { useField } from '../hooks/index'
 import store  from '../store'
 
-const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
+const CreateForm = ({ blogs, blogFormRef, user }) => {
   const addedTitle = useField('text')
   const addedAuthor = useField('text')
   const addedUrl = useField('text')
-  const [message, setMessage] = useState(null)
-  const [type, setType] = useState(null)
-
 
   const createNewBlog = async (event) => {
     event.preventDefault()
@@ -23,7 +19,10 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
     const createdBlog = { title, author, url, user }
     try {
       const response = await blogService.create(createdBlog)
-      setBlogs(blogs.concat(response))
+      store.dispatch({
+        type: 'GET_BLOGS',
+        data: blogs.concat(response)
+      })
       store.dispatch({
         type: 'CREATE', 
         data: {
@@ -42,7 +41,7 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
         type: 'CREATE', 
         data: {
           notification: 'could not create new blog',
-          style: 'error'
+          style: 'success'
       }})
 
       setTimeout(() => {
@@ -59,7 +58,7 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
 
   return (
     <div>
-      <Notification message={message} type={type} />
+      <Notification />
       <h2>Lisää uusi blogi</h2>
       <form onSubmit={createNewBlog}>
         <label>nimi</label>
@@ -76,7 +75,6 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
 
 CreateForm.propTypes = {
   blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
 

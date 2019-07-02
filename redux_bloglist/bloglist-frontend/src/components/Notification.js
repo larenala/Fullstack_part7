@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 const Notification = ( props ) => {
-  console.log('props ', props)
+  props = props.notification
   const display = {
     display: props.notification === '' ? 'none' : 'block'
   }
