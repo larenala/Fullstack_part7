@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,11 +12,10 @@ import { connect } from 'react-redux'
 import './index.css'
 
 const App = () => {
-  //const [blogs, setBlogs] = useState([])
   const { blogs } = store.getState()
   let username = useField('text')
   let password = useField('password')
-  const [user, setUser] = useState(null)
+  const { user } = store.getState()
   const blogFormRef = React.createRef()
 
 
@@ -28,7 +27,6 @@ const App = () => {
           type: 'GET_BLOGS',
           data: blogs
         })
-        //setBlogs( blogs )
       )
     } catch (exception) {
       console.log('exception ', exception)
@@ -40,7 +38,11 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      store.dispatch({
+        type: 'SET_USER',
+        data: user
+      })
+      //setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -57,7 +59,11 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
-      setUser(user)
+      store.dispatch({
+        type: 'SET_USER',
+        data: user
+      })
+      //setUser(user)
       username.resetfield.reset()
       password.resetfield.reset()
       store.dispatch({
@@ -109,7 +115,11 @@ const App = () => {
 
   const logoutUser = () => {
     window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    store.dispatch({
+      type: 'SET_USER',
+      data: null
+    })
+   // setUser(null)
     store.dispatch({
       type: 'CREATE', 
       data: {
@@ -156,7 +166,8 @@ const mapStateToProps = (state) => {
   return {
     notification: state.notification,
     style: state.style,
-    blogs: state.blogs
+    blogs: state.blogs,
+    user: state.user
   }
 }
 

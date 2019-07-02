@@ -26,7 +26,6 @@ const notificationReducer = (state = notificationAtStart, action) => {
             notification: action.data.notification,
             style: action.data.style
           }
-          console.log('NEw state ', newState)
           return newState
         case 'REMOVE':
           const initialState = notificationAtStart
