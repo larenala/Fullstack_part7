@@ -1,7 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import {
+  BrowserRouter as Router,
+  Route, Link, Redirect, withRouter
+} from 'react-router-dom'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import Notification from './components/Notification'
 import CreateForm from './components/CreateForm'
 import LoginForm from './components/LoginForm'
@@ -13,12 +18,11 @@ import './index.css'
 
 const App = () => {
   const { blogs } = store.getState()
+  const [ users, setUsers ] = useState([]) 
   let username = useField('text')
   let password = useField('password')
   const { user } = store.getState()
   const blogFormRef = React.createRef()
-
-
 
   useEffect(() => {
     try {
@@ -35,6 +39,16 @@ const App = () => {
   }, [])
 
   useEffect(() => {
+    try {
+      userService.getAll().then(users => 
+        setUsers(users)
+      )
+    } catch (exception) {
+      console.log('exception ', exception)
+    }
+  }, [])
+
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -42,7 +56,6 @@ const App = () => {
         type: 'SET_USER',
         data: user
       })
-      //setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -63,7 +76,6 @@ const App = () => {
         type: 'SET_USER',
         data: user
       })
-      //setUser(user)
       username.resetfield.reset()
       password.resetfield.reset()
       store.dispatch({
@@ -119,7 +131,6 @@ const App = () => {
       type: 'SET_USER',
       data: null
     })
-   // setUser(null)
     store.dispatch({
       type: 'CREATE', 
       data: {
@@ -137,7 +148,7 @@ const App = () => {
       }, 3000)
   }
 
-  return (
+  const Home = () => (
     <div>
       <div className='notification'>
         <Notification />
@@ -159,6 +170,51 @@ const App = () => {
         }
       </div>
     </div>
+  )
+
+  const Users = () => {
+    console.log('users ', users)
+    console.log('done')
+      return (
+      <div>
+          { user === null ?
+            loginForm() :
+            <div>
+              <h2>blogs</h2>
+              <p>{user.name} logged in</p>
+              <button onClick={logoutUser}>Log out</button>
+              <h2>Users</h2>
+              <table>
+                <tbody>
+                  <tr>
+                    <th></th>
+                    <th>blogs created</th>
+                  </tr>
+                  {users.map(user => 
+                  <tr key={user.id}>
+                    <td>{user.name}</td>
+                    <td>{user.blogs.length}</td>
+                  </tr>)}
+                </tbody>
+              </table>
+              
+              
+            </div>
+          }
+          </div>
+    )
+  }
+
+  return (
+    <div>
+      <Router>
+        <div>
+          <Route exact path='/' render={() => <Home />} />
+          <Route path='/users' render={() => <Users />} />
+        </div>
+      </Router>
+    </div>
+    
   )
 }
 
