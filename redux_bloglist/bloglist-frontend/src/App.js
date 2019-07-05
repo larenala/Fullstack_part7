@@ -13,6 +13,7 @@ import Togglable from './components/Togglable'
 import store from './store'
 import { connect } from 'react-redux'
 import './index.css'
+import { Table } from 'react-bootstrap'
 
 const App = () => {
   const { blogs } = store.getState()
@@ -95,14 +96,24 @@ const App = () => {
             <Togglable buttonLabel="create new" ref={blogFormRef}>
               <CreateForm blogs={blogs} blogFormRef={blogFormRef} user={user}/>
             </Togglable>
-            {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-              <ul>
-                <li key={blog.id}>
-                  <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link> 
-                </li>
-              </ul>
-              
-            )}
+            <Table striped>
+              <tbody>
+                <tr>
+                  <th>Title</th>
+                  <th>Author</th>
+                </tr>
+                {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+                <tr key={blog.id}>
+                  
+                  <td>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> 
+                  </td>
+                  <td>
+                    {blog.author}
+                  </td>
+                </tr>)}
+              </tbody>
+            </Table>
           </div>
       </div>
     </div>
@@ -116,7 +127,7 @@ const App = () => {
       <div>
             <div>
               <h2>Users</h2>
-              <table>
+              <Table striped>
                 <tbody>
                   <tr>
                     <th></th>
@@ -128,7 +139,7 @@ const App = () => {
                     <td>{listedUser.blogs.length}</td>
                   </tr>)}
                 </tbody>
-              </table>
+              </Table>
           </div>
       </div>
     )
@@ -156,13 +167,13 @@ const App = () => {
   const blogById = (id) =>  blogs.find(blog => blog.id === id)
    
   return (
-    <div>
+    <div className='container'>
       <Router>
         
         <div>            
             {user
             ? 
-              <div>
+              <div className='nav'>
                 <Link style={padding} to="/blogs">blogs</Link>
                 <Link style={padding} to="/users">users</Link>
                 <span>

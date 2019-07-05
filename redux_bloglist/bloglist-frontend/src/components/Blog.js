@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import store from '../store'
 
-const Blog = ( {viewedBlog, blogs, user} ) => {
+const Blog = ({ viewedBlog, blogs, user }) => {
   if (viewedBlog === undefined ) {
     return null
   }
@@ -60,6 +60,7 @@ const Blog = ( {viewedBlog, blogs, user} ) => {
             <button onClick={removeBlog(viewedBlog.id)}>remove</button>
             :
           <></>}
+          <h3>comments</h3>
     </div>
   )
 }
