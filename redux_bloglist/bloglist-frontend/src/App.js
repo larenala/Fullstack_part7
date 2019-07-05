@@ -5,13 +5,11 @@ import {
 } from 'react-router-dom'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import userService from './services/users'
 import Notification from './components/Notification'
 import CreateForm from './components/CreateForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
-import { useField } from './hooks/index.js'
 import store from './store'
 import { connect } from 'react-redux'
 import './index.css'
@@ -19,8 +17,6 @@ import './index.css'
 const App = () => {
   const { blogs } = store.getState()
   const [ users, setUsers ] = useState([]) 
-  let username = useField('text')
-  let password = useField('password')
   const { user } = store.getState()
   const blogFormRef = React.createRef()
 
@@ -60,71 +56,6 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    const uname=username.fields.value
-    const pword = password.fields.value
-    try {
-      const user = await loginService.login({
-        uname, pword,
-      })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      store.dispatch({
-        type: 'SET_USER',
-        data: user
-      })
-      username.resetfield.reset()
-      password.resetfield.reset()
-      store.dispatch({
-        type: 'CREATE', 
-        data: {
-          notification: 'kirjautunut sisään',
-          style: 'success'
-      }})
-
-      setTimeout(() => {
-        store.dispatch({type: 'REMOVE', data: {
-          notification: null,
-          style: null
-        }})
-      }, 3000)
-    } catch (exception) {
-      store.dispatch({
-        type: 'CREATE', 
-        data: {
-          notification: 'käyttäjätunnus tai salasana virheellinen',
-          style: 'error'
-      }})
-      username.resetfield.reset()
-      password.resetfield.reset()
-      setTimeout(() => {
-        store.dispatch({
-          type: 'REMOVE', 
-          data: {
-            notification: null,
-            style: null
-          }})
-        }, 3000)
-    }
-  }
-
-  const loginForm = () => {
-    return (
-      <div className='login'>
-        <Togglable buttonLabel='login'>
-          <LoginForm
-            username={username.fields}
-            password={password.fields}
-            handleSubmit={handleLogin}
-          />
-        </Togglable>
-      </div>
-    )
-  }
-
   const logoutUser = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     store.dispatch({
@@ -148,41 +79,36 @@ const App = () => {
       }, 3000)
   }
 
+  const padding = {
+    padding: 5
+  }
+
   const Home = () => (
     <div>
       <div className='notification'>
         <Notification />
       </div>
       <div>
-        { user === null ?
-          loginForm() :
           <div className='blogs'>
-            <h2>Blogs</h2>
-            <p>{user.name} logged in</p>
-            <button onClick={logoutUser}>Log out</button>
-            <Togglable buttonLabel="lisää uusi blogi" ref={blogFormRef}>
+            <h2>Blog app</h2>
+            <Togglable buttonLabel="create new" ref={blogFormRef}>
               <CreateForm blogs={blogs} blogFormRef={blogFormRef} user={user}/>
             </Togglable>
             {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
               <Blog className='blog' key={blog.id} blog={blog} blogs={blogs} user={user} />
             )}
           </div>
-        }
       </div>
     </div>
   )
 
   const Users = () => {
-    console.log('users ', users)
-    console.log('done')
+    if (user === null) {
+      return null
+    }
       return (
       <div>
-          { user === null ?
-            loginForm() :
             <div>
-              <h2>blogs</h2>
-              <p>{user.name} logged in</p>
-              <button onClick={logoutUser}>Log out</button>
               <h2>Users</h2>
               <table>
                 <tbody>
@@ -190,27 +116,61 @@ const App = () => {
                     <th></th>
                     <th>blogs created</th>
                   </tr>
-                  {users.map(user => 
-                  <tr key={user.id}>
-                    <td>{user.name}</td>
-                    <td>{user.blogs.length}</td>
+                  {users.map(listedUser => 
+                  <tr key={listedUser.id}>
+                    <td><Link to={`/users/${listedUser.id}`}>{listedUser.name}</Link></td>
+                    <td>{listedUser.blogs.length}</td>
                   </tr>)}
                 </tbody>
               </table>
-              
-              
-            </div>
-          }
           </div>
+      </div>
     )
   }
+
+  const User = ({ viewedUser }) => {
+    if (viewedUser === undefined) {
+      return null
+    }
+    return (
+      <div>
+        <h2>{viewedUser.name}</h2>
+        <h4>added blogs</h4>
+        <ul>
+          {viewedUser.blogs.map(blog => <li key={blog.id}>{blog.title}</li>)}
+        </ul>
+      </div> 
+
+    )
+  }
+
+  const userById = (id) =>
+    users.find(user => user.id === id)
 
   return (
     <div>
       <Router>
-        <div>
-          <Route exact path='/' render={() => <Home />} />
-          <Route path='/users' render={() => <Users />} />
+        
+        <div>            
+            {user
+            ? 
+              <div>
+                <Link style={padding} to="/blogs">blogs</Link>
+                <Link style={padding} to="/users">users</Link>
+                <span>
+                  {user.name} logged in <button onClick={logoutUser}>logout</button>
+                </span>
+              </div>
+            : <Link to="/login">login</Link>
+          }
+
+          
+          <Route exact path='/blogs' render={() => user ? <Home /> : <Redirect to='/login' /> } />
+          <Route exact path='/users/:id' render={({ match }) => 
+            <User viewedUser={userById(match.params.id)} />
+          } />
+          <Route exact path='/users' render={() => user ? <Users /> : <Redirect to="/login" /> } />
+          <Route exact path='/login' render={() => !user ? <LoginForm /> : <Redirect to='blogs' /> } />
         </div>
       </Router>
     </div>

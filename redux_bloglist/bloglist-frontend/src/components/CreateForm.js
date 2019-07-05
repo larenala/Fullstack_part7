@@ -75,7 +75,6 @@ const CreateForm = ({ blogs, blogFormRef, user }) => {
 
 CreateForm.propTypes = {
   blogs: PropTypes.array.isRequired,
-  user: PropTypes.object.isRequired
 }
 
 export default CreateForm
