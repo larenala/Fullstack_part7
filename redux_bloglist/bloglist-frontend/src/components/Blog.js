@@ -2,36 +2,29 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import store from '../store'
 
-const Blog = ({ blog, blogs, user }) => {
+const Blog = ( {viewedBlog, blogs, user} ) => {
+  if (viewedBlog === undefined ) {
+    return null
+  }
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
     marginBottom: 5
-  }
-  const [ showInfo, setShowInfo ] = useState(false)
-
-  const showBlogDetails = () => {
-    return (
-      showInfo ? setShowInfo(false) : setShowInfo(true)
-    )
   }
 
   const handleLike =  () => {
     return async () => {
       const changedBlog = {
-        ...blog,
-        likes: blog.likes+1,
-        user: blog.user,
+        ...viewedBlog,
+        likes: viewedBlog.likes+1,
+        user: viewedBlog.user,
       }
       try {
-        const response = await blogService.update(blog.id, changedBlog)
+        const response = await blogService.update(viewedBlog.id, changedBlog)
         store.dispatch({
           type: 'GET_BLOGS',
-          data: blogs.map(b => b.id !== blog.id ? b : response)
+          data: blogs.map(b => b.id !== viewedBlog.id ? b : response)
         })
-        setShowInfo(true)
       } catch (exception) {
         console.log('exception ', exception)
       }
@@ -55,29 +48,21 @@ const Blog = ({ blog, blogs, user }) => {
 
     }
   }
-
-
-  return (
-    <div>
-      <div style={blogStyle}>
-        {showInfo ?
-          <div className='showDetails' onClick={showBlogDetails}>
-            {blog.title} {blog.author}
-            <br/>
-            <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a><br/>
-            <div className='likes'>{blog.likes} likes <button onClick={handleLike(blog.id)}>like</button></div>
-            <p>added by {blog.user.username}</p>
-            {blog.user.username === user.username ?
-              <button onClick={removeBlog(blog.id)}>remove</button>
-              :
-            <></>}
-          </div>
-          :
-          <div className='showList' onClick={showBlogDetails}>
-            {blog.title} {blog.author}
-          </div>}
-      </div>
+    return (
+    <div style={blogStyle}>
+      <h2>{viewedBlog.title} {viewedBlog.author}</h2>
+       
+          <br/>
+          <a href={viewedBlog.url} target="_blank" rel="noopener noreferrer">{viewedBlog.url}</a><br/>
+          <div className='likes'>{viewedBlog.likes} likes <button onClick={handleLike(viewedBlog.id)}>like</button></div>
+          <p>added by {viewedBlog.user.username}</p>
+          {viewedBlog.user.username === user.username ?
+            <button onClick={removeBlog(viewedBlog.id)}>remove</button>
+            :
+          <></>}
     </div>
-  )}
+  )
+}
+
 
 export default Blog

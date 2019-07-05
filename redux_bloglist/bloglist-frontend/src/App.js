@@ -81,8 +81,9 @@ const App = () => {
 
   const padding = {
     padding: 5
-  }
+  } 
 
+  
   const Home = () => (
     <div>
       <div className='notification'>
@@ -95,7 +96,12 @@ const App = () => {
               <CreateForm blogs={blogs} blogFormRef={blogFormRef} user={user}/>
             </Togglable>
             {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-              <Blog className='blog' key={blog.id} blog={blog} blogs={blogs} user={user} />
+              <ul>
+                <li key={blog.id}>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link> 
+                </li>
+              </ul>
+              
             )}
           </div>
       </div>
@@ -147,6 +153,8 @@ const App = () => {
   const userById = (id) =>
     users.find(user => user.id === id)
 
+  const blogById = (id) =>  blogs.find(blog => blog.id === id)
+   
   return (
     <div>
       <Router>
@@ -164,7 +172,9 @@ const App = () => {
             : <Link to="/login">login</Link>
           }
 
-          
+          <Route exact path='/blogs/:id' render={( { match }) => 
+             <Blog viewedBlog={blogById(match.params.id)} blogs={blogs} user={user}/>
+          } />
           <Route exact path='/blogs' render={() => user ? <Home /> : <Redirect to='/login' /> } />
           <Route exact path='/users/:id' render={({ match }) => 
             <User viewedUser={userById(match.params.id)} />
