@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import blogService from '../services/blogs'
 import store from '../store'
+import { Button } from 'react-bootstrap'
 
 const Blog = ({ viewedBlog, blogs, user }) => {
   if (viewedBlog === undefined ) {
@@ -54,10 +55,10 @@ const Blog = ({ viewedBlog, blogs, user }) => {
        
           <br/>
           <a href={viewedBlog.url} target="_blank" rel="noopener noreferrer">{viewedBlog.url}</a><br/>
-          <div className='likes'>{viewedBlog.likes} likes <button onClick={handleLike(viewedBlog.id)}>like</button></div>
+          <div className='likes'>{viewedBlog.likes} likes <Button onClick={handleLike(viewedBlog.id)} variant='light'>like</Button></div>
           <p>added by {viewedBlog.user.username}</p>
           {viewedBlog.user.username === user.username ?
-            <button onClick={removeBlog(viewedBlog.id)}>remove</button>
+            <Button onClick={removeBlog(viewedBlog.id)} variant='danger'>remove</Button>
             :
           <></>}
           <h3>comments</h3>

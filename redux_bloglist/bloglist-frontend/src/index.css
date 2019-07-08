@@ -1,26 +1,41 @@
-.notification {
-    min-height: 2em;
+.btn {
+    margin: 0.5em 0;
 }
 
-.nav {
-    background-color: lightgray;
-    padding: 10px;
+#logoutBtn {
+    margin: 0;
+}
+
+a {
+    color: cornflowerblue;
+}
+
+a:hover {
+    color: darkblue;
+    text-decoration: none;
+}
+
+.loginForm {
+    max-width: 40%;
+    margin: 0 auto;
+}
+
+.notification {
+    min-height: 2em;
 }
 
 .success {
     font-size: 1.2em;
     padding: 1em;
     color: green;
-    border: 5px solid green;
     background-color: mintcream;
-    margin: 0 -1em;
+    margin: 0;
 }
 
 .error {
     padding: 1em;
     font-size: 1.2em;
     color: red;
-    border: 5px solid red;
-    background-color: gainsboro;
-    margin: 0 -1em;
+    background-color: lavenderblush;
+    margin: 0;
 }

@@ -13,7 +13,7 @@ import Togglable from './components/Togglable'
 import store from './store'
 import { connect } from 'react-redux'
 import './index.css'
-import { Table } from 'react-bootstrap'
+import { Table, Button, Navbar, Nav } from 'react-bootstrap'
 
 const App = () => {
   const { blogs } = store.getState()
@@ -87,13 +87,10 @@ const App = () => {
   
   const Home = () => (
     <div>
-      <div className='notification'>
-        <Notification />
-      </div>
       <div>
           <div className='blogs'>
-            <h2>Blog app</h2>
-            <Togglable buttonLabel="create new" ref={blogFormRef}>
+            <h2>Blogs</h2>
+            <Togglable buttonLabel="Create new blog" class='button' ref={blogFormRef}>
               <CreateForm blogs={blogs} blogFormRef={blogFormRef} user={user}/>
             </Togglable>
             <Table striped>
@@ -125,22 +122,22 @@ const App = () => {
     }
       return (
       <div>
-            <div>
-              <h2>Users</h2>
-              <Table striped>
-                <tbody>
-                  <tr>
-                    <th></th>
-                    <th>blogs created</th>
-                  </tr>
-                  {users.map(listedUser => 
-                  <tr key={listedUser.id}>
-                    <td><Link to={`/users/${listedUser.id}`}>{listedUser.name}</Link></td>
-                    <td>{listedUser.blogs.length}</td>
-                  </tr>)}
-                </tbody>
-              </Table>
-          </div>
+        <div>
+          <h2>Users</h2>
+          <Table striped>
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <th>Blogs created</th>
+              </tr>
+              {users.map(listedUser => 
+              <tr key={listedUser.id}>
+                <td><Link to={`/users/${listedUser.id}`}>{listedUser.name}</Link></td>
+                <td>{listedUser.blogs.length}</td>
+              </tr>)}
+            </tbody>
+          </Table>
+        </div>
       </div>
     )
   }
@@ -150,7 +147,9 @@ const App = () => {
       return null
     }
     return (
+      
       <div>
+        
         <h2>{viewedUser.name}</h2>
         <h4>added blogs</h4>
         <ul>
@@ -167,28 +166,58 @@ const App = () => {
   const blogById = (id) =>  blogs.find(blog => blog.id === id)
    
   return (
-    <div className='container'>
+    <div>
       <Router>
-        
-        <div>            
+      <Navbar collapseOnSelect expand="lg" bg="light">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+      
+      
+      <Nav className='mr-auto'>
+        <Navbar.Brand href="/blogs">Blog App</Navbar.Brand>
             {user
             ? 
-              <div className='nav'>
-                <Link style={padding} to="/blogs">blogs</Link>
-                <Link style={padding} to="/users">users</Link>
-                <span>
-                  {user.name} logged in <button onClick={logoutUser}>logout</button>
-                </span>
-              </div>
-            : <Link to="/login">login</Link>
+              <>
+                <Nav.Item>
+                  <Nav.Link href='' as='span'>
+                    <Link to="/blogs">blogs</Link>
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link href='' as='span'>
+                    <Link style={padding} to="/users">users</Link>
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav>
+                  <Nav.Item>
+                    <Nav.Link eventKey='disabled'>
+                      <em>{user.name} logged in</em>
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                  <Button onClick={logoutUser} id='logoutBtn'>logout</Button>   
+                  </Nav.Item>
+                </Nav>
+                
+              </>
+            : <Nav>
+                
+              </Nav>  
           }
+          </Nav> 
+          </Navbar.Collapse>
+        </Navbar> 
 
+        <div className='notification'>
+          <Notification />
+        </div>
+        <div className='container'> 
           <Route exact path='/blogs/:id' render={( { match }) => 
              <Blog viewedBlog={blogById(match.params.id)} blogs={blogs} user={user}/>
           } />
           <Route exact path='/blogs' render={() => user ? <Home /> : <Redirect to='/login' /> } />
           <Route exact path='/users/:id' render={({ match }) => 
-            <User viewedUser={userById(match.params.id)} />
+          <User viewedUser={userById(match.params.id)} />
           } />
           <Route exact path='/users' render={() => user ? <Users /> : <Redirect to="/login" /> } />
           <Route exact path='/login' render={() => !user ? <LoginForm /> : <Redirect to='blogs' /> } />

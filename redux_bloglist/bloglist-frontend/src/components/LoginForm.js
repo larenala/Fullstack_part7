@@ -3,6 +3,7 @@ import { useField } from '../hooks/index'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import store from '../store'
+import { Button, Form } from 'react-bootstrap'
 
 const LoginForm = () => {
 
@@ -59,19 +60,19 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
-      <h2>Kirjaudu</h2>
-      <form onSubmit={handleLogin}>
-        <div>
+    <div className='loginForm'>
+      <h2>Log in</h2>
+      <Form onSubmit={handleLogin} >
+        <Form.Label>
           käyttäjätunnus
-          <input { ...username.fields } />
-        </div>
-        <div>
+        </Form.Label>
+          <Form.Control { ...username.fields } />
+        <Form.Label>
           salasana
-          <input { ...password.fields } />
-        </div>
-        <button type="submit">kirjaudu</button>
-      </form>
+        </Form.Label>
+          <Form.Control { ...password.fields } />
+        <Button type="submit">kirjaudu</Button>
+      </Form>
     </div>
   )
 }

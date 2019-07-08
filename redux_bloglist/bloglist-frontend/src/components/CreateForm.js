@@ -4,6 +4,7 @@ import Notification from './Notification'
 import PropTypes from 'prop-types'
 import { useField } from '../hooks/index'
 import store  from '../store'
+import { Button, Form } from 'react-bootstrap'
 
 const CreateForm = ({ blogs, blogFormRef, user }) => {
   const addedTitle = useField('text')
@@ -41,7 +42,7 @@ const CreateForm = ({ blogs, blogFormRef, user }) => {
         type: 'CREATE', 
         data: {
           notification: 'could not create new blog',
-          style: 'success'
+          style: 'error'
       }})
 
       setTimeout(() => {
@@ -60,15 +61,15 @@ const CreateForm = ({ blogs, blogFormRef, user }) => {
     <div>
       <Notification />
       <h2>Lisää uusi blogi</h2>
-      <form onSubmit={createNewBlog}>
-        <label>nimi</label>
-        <input { ...addedTitle.fields } />  <br/>
-        <label>tekijä</label>
-        <input { ...addedAuthor.fields } />  <br/>
-        <label>url</label>
-        <input { ...addedUrl.fields } />   <br/>
-        <input type='submit' value='Lisää' />
-      </form>
+      <Form onSubmit={createNewBlog}>
+        <Form.Label>Title</Form.Label>
+        <Form.Control { ...addedTitle.fields } />  <br/>
+        <Form.Label>Author</Form.Label>
+        <Form.Control { ...addedAuthor.fields } />  <br/>
+        <Form.Label>URL</Form.Label>
+        <Form.Control { ...addedUrl.fields } />   <br/>
+        <Button variant='light' type='submit'>Lisää</Button>
+      </Form>
     </div>
   )
 }
