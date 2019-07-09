@@ -41,14 +41,29 @@ router.post('/', async (request, response) => {
   response.status(201).json(result)
 })
 
+router.post('/:id/comments', async (request, response) => {
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+  try {
+    const comment = request.body.comments
+    blog.comments = blog.comments.concat(comment)
+    console.log('blog comments ', blog.comments)
+    const updatedBlog = await Blog
+      .findByIdAndUpdate(request.params.id, blog, { new: true })
+    response.json(updatedBlog.toJSON())
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.put('/:id', async (request, response) => {
   const id = request.body.user.id
   const user = await User.findById(id)
   try {
-    const { id, author, title, url, likes } = request.body
+    const { id, author, title, url, likes, comments } = request.body
   
     const blog = {
-      id, author, title, url, likes
+      id, author, title, url, likes, comments
     }
     blog.user = user
     const updatedBlog = await Blog

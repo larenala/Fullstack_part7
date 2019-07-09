@@ -49,19 +49,22 @@ const Blog = ({ viewedBlog, blogs, user }) => {
 
     }
   }
-    return (
+  return (
     <div style={blogStyle}>
       <h2>{viewedBlog.title} {viewedBlog.author}</h2>
-       
-          <br/>
-          <a href={viewedBlog.url} target="_blank" rel="noopener noreferrer">{viewedBlog.url}</a><br/>
-          <div className='likes'>{viewedBlog.likes} likes <Button onClick={handleLike(viewedBlog.id)} variant='light'>like</Button></div>
-          <p>added by {viewedBlog.user.username}</p>
-          {viewedBlog.user.username === user.username ?
-            <Button onClick={removeBlog(viewedBlog.id)} variant='danger'>remove</Button>
-            :
+
+      <br/>
+      <a href={viewedBlog.url} target="_blank" rel="noopener noreferrer">{viewedBlog.url}</a><br/>
+      <div className='likes'>{viewedBlog.likes} likes <Button onClick={handleLike(viewedBlog.id)} variant='light'>like</Button></div>
+      <p>added by {viewedBlog.user.username}</p>
+      {viewedBlog.user.username === user.username ?
+        <Button onClick={removeBlog(viewedBlog.id)} variant='danger'>remove</Button>
+        :
           <></>}
-          <h3>comments</h3>
+      <h3>comments</h3>
+      <ul>
+        {viewedBlog.comments.map(comment => <li key={comment}>{comment}</li> )}       
+      </ul>
     </div>
   )
 }
