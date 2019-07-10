@@ -45,9 +45,8 @@ router.post('/:id/comments', async (request, response) => {
   const id = request.params.id
   const blog = await Blog.findById(id)
   try {
-    const comment = request.body.comments
+    const comment = request.body.comments[request.body.comments.length-1]
     blog.comments = blog.comments.concat(comment)
-    console.log('blog comments ', blog.comments)
     const updatedBlog = await Blog
       .findByIdAndUpdate(request.params.id, blog, { new: true })
     response.json(updatedBlog.toJSON())

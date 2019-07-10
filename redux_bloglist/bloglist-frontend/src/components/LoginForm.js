@@ -27,35 +27,35 @@ const LoginForm = () => {
       username.resetfield.reset()
       password.resetfield.reset()
       store.dispatch({
-        type: 'CREATE', 
+        type: 'CREATE',
         data: {
           notification: 'kirjautunut sisään',
           style: 'success'
-      }})
+        } })
 
       setTimeout(() => {
-        store.dispatch({type: 'REMOVE', data: {
+        store.dispatch({ type: 'REMOVE', data: {
           notification: null,
           style: null
-        }})
+        } })
       }, 3000)
     } catch (exception) {
       store.dispatch({
-        type: 'CREATE', 
+        type: 'CREATE',
         data: {
           notification: 'käyttäjätunnus tai salasana virheellinen',
           style: 'error'
-      }})
+        } })
       username.resetfield.reset()
       password.resetfield.reset()
       setTimeout(() => {
         store.dispatch({
-          type: 'REMOVE', 
+          type: 'REMOVE',
           data: {
             notification: null,
             style: null
-          }})
-        }, 3000)
+          } })
+      }, 3000)
     }
   }
 
@@ -66,11 +66,11 @@ const LoginForm = () => {
         <Form.Label>
           käyttäjätunnus
         </Form.Label>
-          <Form.Control { ...username.fields } />
+        <Form.Control { ...username.fields } />
         <Form.Label>
           salasana
         </Form.Label>
-          <Form.Control { ...password.fields } />
+        <Form.Control { ...password.fields } />
         <Button type="submit">kirjaudu</Button>
       </Form>
     </div>

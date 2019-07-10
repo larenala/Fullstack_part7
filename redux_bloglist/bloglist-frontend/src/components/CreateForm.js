@@ -25,31 +25,31 @@ const CreateForm = ({ blogs, blogFormRef, user }) => {
         data: blogs.concat(response)
       })
       store.dispatch({
-        type: 'CREATE', 
+        type: 'CREATE',
         data: {
           notification: `a new blog ${title} by ${author}`,
           style: 'success'
-      }})
+        } })
 
       setTimeout(() => {
-        store.dispatch({type: 'REMOVE', data: {
+        store.dispatch({ type: 'REMOVE', data: {
           notification: null,
           style: null
-        }})
+        } })
       }, 3000)
     } catch (exception) {
       store.dispatch({
-        type: 'CREATE', 
+        type: 'CREATE',
         data: {
           notification: 'could not create new blog',
           style: 'error'
-      }})
+        } })
 
       setTimeout(() => {
-        store.dispatch({type: 'REMOVE', data: {
+        store.dispatch({ type: 'REMOVE', data: {
           notification: null,
           style: null
-        }})
+        } })
       }, 3000)
     }
     addedAuthor.resetfield.reset()
