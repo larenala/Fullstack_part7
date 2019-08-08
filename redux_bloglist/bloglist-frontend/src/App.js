@@ -91,7 +91,10 @@ const App = () => {
         <div className='blogs'>
           <h2>Blogs</h2>
           <Togglable buttonLabel="Create new blog" class='button' ref={blogFormRef}>
-            <CreateForm blogs={blogs} blogFormRef={blogFormRef} user={user}/>
+            <CreateForm
+              blogs={blogs}
+              blogFormRef={blogFormRef}
+              user={user}/>
           </Togglable>
           <Table striped>
             <tbody>
@@ -142,14 +145,14 @@ const App = () => {
     )
   }
 
+
   const User = ({ viewedUser }) => {
     if (viewedUser === undefined) {
       return null
     }
+
     return (
-
       <div>
-
         <h2>{viewedUser.name}</h2>
         <h4>added blogs</h4>
         <ul>
@@ -210,12 +213,14 @@ const App = () => {
           <Notification />
         </div>
         <div className='container'>
-          <Route exact path='/blogs/:id' render={( { match }) =>
-            <Blog viewedBlog={blogById(match.params.id)} blogs={blogs} user={user}/>
+          <Route exact path='/blogs/:id' render={( { match }) => user ?
+            <Blog viewedBlog={blogById(match.params.id)} blogs={blogs} user={user}/> :
+            <Redirect to="/login" />
           } />
           <Route exact path='/blogs' render={() => user ? <Home /> : <Redirect to='/login' /> } />
-          <Route exact path='/users/:id' render={({ match }) =>
-            <User viewedUser={userById(match.params.id)} />
+          <Route exact path='/users/:id' render={({ match }) => user ?
+            <User viewedUser={userById(match.params.id)} /> :
+            <Redirect to="/login" />
           } />
           <Route exact path='/users' render={() => user ? <Users /> : <Redirect to="/login" /> } />
           <Route exact path='/login' render={() => !user ? <LoginForm /> : <Redirect to='blogs' /> } />

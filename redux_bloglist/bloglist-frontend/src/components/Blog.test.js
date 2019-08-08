@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
-import blogs from '../services/blogs';
 
 test('when blogs are listed title and author are visible', () => {
   const blog = {

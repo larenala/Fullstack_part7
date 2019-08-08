@@ -3,11 +3,12 @@ import blogService from '../services/blogs'
 import store from '../store'
 import { useField } from '../hooks/index'
 import { Button, Form } from 'react-bootstrap'
+import { Redirect } from 'react-router-dom'
 
 const Blog = ({ viewedBlog, blogs, user }) => {
   const addedComment = useField('text')
   if (viewedBlog === undefined ) {
-    return null
+    return <Redirect to="/login" />
   }
   const blogStyle = {
     paddingTop: 10,
@@ -59,7 +60,6 @@ const Blog = ({ viewedBlog, blogs, user }) => {
       ...viewedBlog,
       comments: viewedBlog.comments.concat(comment),
     }
-    console.log('commented ', commentedBlog)
     try {
       const response = await blogService.createComment(commentedBlog)
       store.dispatch({
