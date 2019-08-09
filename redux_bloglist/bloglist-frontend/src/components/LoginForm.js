@@ -66,12 +66,12 @@ const LoginForm = () => {
         <Form.Label>
           käyttäjätunnus
         </Form.Label>
-        <Form.Control { ...username.fields } />
+        <Form.Control data-cy='username' { ...username.fields } />
         <Form.Label>
           salasana
         </Form.Label>
-        <Form.Control { ...password.fields } />
-        <Button type="submit">kirjaudu</Button>
+        <Form.Control data-cy='password' { ...password.fields } />
+        <Button type='submit' data-cy='kirjaudu'>kirjaudu</Button>
       </Form>
     </div>
   )
