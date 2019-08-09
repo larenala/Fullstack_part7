@@ -63,12 +63,12 @@ const CreateForm = ({ blogs, blogFormRef, user }) => {
       <h2>Lisää uusi blogi</h2>
       <Form onSubmit={createNewBlog}>
         <Form.Label>Title</Form.Label>
-        <Form.Control { ...addedTitle.fields } />  <br/>
+        <Form.Control data-cy='blogTitle' { ...addedTitle.fields } />  <br/>
         <Form.Label>Author</Form.Label>
-        <Form.Control { ...addedAuthor.fields } />  <br/>
+        <Form.Control data-cy='blogAuthor' { ...addedAuthor.fields } />  <br/>
         <Form.Label>URL</Form.Label>
-        <Form.Control { ...addedUrl.fields } />   <br/>
-        <Button variant='light' type='submit'>Lisää</Button>
+        <Form.Control data-cy='blogUrl' { ...addedUrl.fields } />   <br/>
+        <Button variant='light' type='submit' data-cy='addNewBlog'>Lisää</Button>
       </Form>
     </div>
   )

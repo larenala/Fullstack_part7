@@ -90,7 +90,7 @@ const App = () => {
       <div>
         <div className='blogs'>
           <h2>Blogs</h2>
-          <Togglable buttonLabel="Create new blog" class='button' ref={blogFormRef}>
+          <Togglable buttonLabel="Create new blog" class='button' dataCy='createBlog' ref={blogFormRef}>
             <CreateForm
               blogs={blogs}
               blogFormRef={blogFormRef}

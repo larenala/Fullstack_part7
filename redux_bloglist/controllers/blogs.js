@@ -12,33 +12,37 @@ router.get('/', async (request, response) => {
 
 router.post('/', async (request, response) => {
   const blog = new Blog(request.body)
-
-  if (!request.token) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+  try {
+    if (!request.token) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+  
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+      
+    const user = await User.findById(decodedToken.id)
+  
+    blog.user = user
+  
+    if (!blog.url || !blog.title ) {
+      return response.status(400).send({ error: 'title or url missing'}).end()
+    }
+  
+    if ( !blog.likes ) {
+      blog.likes = 0
+    }
+  
+    const result = await blog.save()
+    user.blogs = user.blogs.concat(result)
+    await user.save()
+    response.status(201).json(result)
+  } catch (error) {
+    next(error)
   }
-
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-    
-  const user = await User.findById(decodedToken.id)
-
-  blog.user = user
-
-  if (!blog.url || !blog.title ) {
-    return response.status(400).send({ error: 'title or url missing'}).end()
-  }
-
-  if ( !blog.likes ) {
-    blog.likes = 0
-  }
-
-  const result = await blog.save()
-  user.blogs = user.blogs.concat(result)
-  await user.save()
-  response.status(201).json(result)
+  
 })
 
 router.post('/:id/comments', async (request, response) => {

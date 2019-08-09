@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
-    "test": "jest . --verbose",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "start:test": "cross-env NODE_ENV=test node index.js"
@@ -15,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@testing-library/react": "^8.0.1",
+    "cross-env": "^5.2.0",
     "cypress": "^3.4.1",
     "nodemon": "^1.19.1",
     "supertest": "^3.4.1"
