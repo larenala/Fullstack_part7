@@ -78,16 +78,21 @@ const Blog = ({ viewedBlog, blogs, user }) => {
 
       <br/>
       <a href={viewedBlog.url} target="_blank" rel="noopener noreferrer">{viewedBlog.url}</a><br/>
-      <div className='likes'>{viewedBlog.likes} likes <Button onClick={handleLike(viewedBlog.id)} variant='light'>like</Button></div>
+      <div className='likes' data-cy='blogLikes'>{viewedBlog.likes} likes 
+        <Button 
+          onClick={handleLike(viewedBlog.id)}
+          data-cy='likeButton'
+          variant='light'>like
+        </Button></div>
       <p>added by {viewedBlog.user.username}</p>
       {viewedBlog.user.username === user.username ?
-        <Button onClick={removeBlog(viewedBlog.id)} variant='outline-danger'>remove</Button>
+        <Button onClick={removeBlog(viewedBlog.id)} data-cy='removeButton' variant='outline-danger'>remove</Button>
         :
           <></>}
       <h3>comments</h3>
       <Form onSubmit={sendComment}>
-        <Form.Control {  ...addedComment.fields } />
-        <Button type='submit'>add comment</Button>
+        <Form.Control data-cy='commentField' {  ...addedComment.fields } />
+        <Button type='submit' data-cy='commentButton'>add comment</Button>
       </Form>
       <ul>
         {viewedBlog.comments.map(comment => <li key={`${comment}:${(Math.random() * 100)}`} >{comment}</li> )}       

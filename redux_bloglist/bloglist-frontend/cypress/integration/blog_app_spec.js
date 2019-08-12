@@ -53,15 +53,59 @@ describe('Blog App', function () {
         cy.get('[data-cy=blogAuthor]')
           .type('Cypress Author')
         cy.get('[data-cy=blogUrl]')
-          .type('Cypress Url')
+          .type('www.cypressurl.com/test')
         cy.get('[data-cy=addNewBlog]')
           .click()
+        cy.visit('http://localhost:3000/blogs')
       })
 
       it('title of created blog can be found', function() {
-        cy.visit('http://localhost:3000/blogs')
         cy.contains('Cypress Title')
       })
+
+      describe('individual blog can be viewed', function() {
+        beforeEach(function () {
+          cy.visit('http://localhost:3000/blogs')
+          cy.get('[data-cy=linkToBlog]')
+            .click()
+        })
+
+        it('blog can be commented', function() {
+          cy.get('[data-cy=commentField]')
+            .type('Cypress Comment')
+          cy.get('[data-cy=commentButton]')
+            .click()
+          cy.contains('Cypress Comment')
+        })
+
+        it('user can like a blog', function(){
+          cy.get('[data-cy=likeButton]')
+            .click()
+          cy.get('[data-cy=blogLikes]')
+          cy.contains('1 likes')
+        })
+
+        it('user can remove blog created by user', function() {
+          cy.get('[data-cy=removeButton]')
+            .click()
+            .should('not.exist')
+        })
+
+        describe('user can log out', function() {
+          beforeEach(function() {
+            cy.get('[data-cy=logoutButton]')
+              .click()
+          })
+          it('log out button disappears when user logs out', function() {
+            cy.get('[data-cy=logoutButton]')
+              .should('not.exist')
+          })
+
+        })
+
+        
+      })
+
     })
   })
 })

@@ -106,7 +106,7 @@ const App = () => {
                 <tr key={blog.id}>
 
                   <td>
-                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                    <Link data-cy='linkToBlog' to={`/blogs/${blog.id}`}>{blog.title}</Link>
                   </td>
                   <td>
                     {blog.author}
@@ -196,7 +196,7 @@ const App = () => {
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Button variant='outline-primary' onClick={logoutUser} id='logoutBtn'>logout</Button>
+                    <Button variant='outline-primary' onClick={logoutUser} id='logoutBtn' data-cy='logoutButton'>logout</Button>
                   </Nav.Item>
                 </Nav>
 
