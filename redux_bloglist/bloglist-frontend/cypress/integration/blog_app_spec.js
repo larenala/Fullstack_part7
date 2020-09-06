@@ -85,7 +85,7 @@ describe('Blog App', function () {
           cy.contains('1 likes')
         })
 
-        it('user can remove blog created by user', function() {
+        it.only('user can remove blog created by user', function() {
           cy.get('[data-cy=removeButton]')
             .click()
             .should('not.exist')
